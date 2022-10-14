@@ -1,26 +1,20 @@
-import pytest
+import pytest, requests
 
 
-BASE_URL = "https://www.lenvendo.ru/api/js-test-task"
+BASE_URL = "https://www.lenvendo.ru/api/js-test-task/?search=Alcatel&sort_field=name"
 
    
-class Url():
-    def __init__(self, search: str = None, sort_field: str = None) -> str:
-        self.search = search
-        self.sort_field = sort_field
+class Product():
+    def __init__(self, name: str = None, image: str = None, price: int = None):
+        self.name = name
+        self.image = image
+        self.price = price        
 
-    def create_url(self):
-        if self.search and self.sort_field:
-            URL = BASE_URL + f'/?search={self.search}&sort_field={self.sort_field}'
-        elif self.search and not self.sort_field:
-            URL = BASE_URL + f'/?search={self.search}'
-        elif not self.search and self.sort_field:
-            URL = BASE_URL + f'/?sort_field={self.sort_field}'
-        else:
-            URL = BASE_URL + '/'
-        return URL
-        
+
 @pytest.fixture()
-def return_url():
-    return Url()
+def send_request():
+    res = requests.get(BASE_URL)
 
+    lst_of_products = [Product(product['name'], product['image'], product['price']) for product in res.json()["products"]]
+
+    return lst_of_products
