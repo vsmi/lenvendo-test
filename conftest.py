@@ -1,5 +1,7 @@
 import pytest, requests
+from selenium import webdriver
 
+# Фикстуры для API теста
 
 BASE_URL = "https://www.lenvendo.ru/api/js-test-task/?search=Alcatel&sort_field=name"
 
@@ -18,3 +20,13 @@ def send_request():
     lst_of_products = [Product(product['name'], product['image'], product['price']) for product in res.json()["products"]]
 
     return lst_of_products
+
+
+
+# Фикстуры для UI теста
+@pytest.fixture()
+def driver():
+    driver = webdriver.Chrome(executable_path="./chromedriver")
+    yield driver
+
+    driver.close()
